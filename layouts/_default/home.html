@@ -1,0 +1,36 @@
+   {{ $files := readDir "static/img" }}
+   {{ $names := slice }}
+   
+   {{ range $files }}
+     {{ if hasSuffix .Name "-dark.png" }}
+       {{ $names = $names | append (substr .Name 0 -9) }}
+     {{ end }}
+   {{ end }}
+   
+   <table width="100%">
+     <thead>
+       <tr>
+         <th>Base Name</th>
+         <th>Dark</th>
+         <th>Light</th>
+       </tr>
+     </thead>
+     <tbody>
+       {{ range $name := $names }}
+       <tr>
+         <td>{{ $name }}</td>
+         <td>
+            <a href="img/{{ $name }}-dark.png">
+             <img src="img/{{ $name }}-dark.png" alt="{{ $name }} dark" width="200px" />
+          </a>
+         </td>
+         <td>
+            <a href="img/{{ $name }}-light.png">
+             <img src="img/{{ $name }}-light.png" alt="{{ $name }} light" width="200px" />
+            </a>
+         </td>
+       </tr>
+       {{ end }}
+     </tbody>
+   </table>
+   
