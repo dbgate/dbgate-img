@@ -2,3 +2,6 @@
 Generated screenshots from DbGate
 
 Site: media.dbgate.io
+
+STABLE: branch stable  
+DEV: branch master
