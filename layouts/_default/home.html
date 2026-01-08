@@ -1,7 +1,79 @@
 <h1>Image Gallery</h1>
 
-<h2>Stable</h2>
-{{ partial "images-table.html" "img" }}
+{{ $stableFiles := readDir "static/img" }}
+{{ $devFiles := readDir "static/img-dev" }}
+{{ $names := slice }}
 
-<h2>DEV</h2>
-{{ partial "images-table.html" "img-dev" }}
+{{ range $stableFiles }}
+  {{ if hasSuffix .Name "-dark.png" }}
+    {{ $names = $names | append (substr .Name 0 -9) }}
+  {{ end }}
+{{ end }}
+
+{{ range $devFiles }}
+  {{ if hasSuffix .Name "-dark.png" }}
+    {{ $baseName := substr .Name 0 -9 }}
+    {{ if not (in $names $baseName) }}
+      {{ $names = $names | append $baseName }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+<table width="100%">
+  <thead>
+    <tr>
+      <th>Base Name</th>
+      <th>Dark STABLE</th>
+      <th>Dark DEV</th>
+      <th>Light Stable</th>
+      <th>Light DEV</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{ range $name := $names }}
+    <tr>
+      <td>{{ $name }}</td>
+      <td>
+        {{ $stableDark := printf "static/img/%s-dark.png" $name }}
+        {{ if fileExists $stableDark }}
+          <a href="img/{{ $name }}-dark.png">
+            <img src="img/{{ $name }}-dark.png" alt="{{ $name }} dark stable" width="200px" />
+          </a>
+        {{ else }}
+          -
+        {{ end }}
+      </td>
+      <td>
+        {{ $devDark := printf "static/img-dev/%s-dark.png" $name }}
+        {{ if fileExists $devDark }}
+          <a href="img-dev/{{ $name }}-dark.png">
+            <img src="img-dev/{{ $name }}-dark.png" alt="{{ $name }} dark dev" width="200px" />
+          </a>
+        {{ else }}
+          -
+        {{ end }}
+      </td>
+      <td>
+        {{ $stableLight := printf "static/img/%s-light.png" $name }}
+        {{ if fileExists $stableLight }}
+          <a href="img/{{ $name }}-light.png">
+            <img src="img/{{ $name }}-light.png" alt="{{ $name }} light stable" width="200px" />
+          </a>
+        {{ else }}
+          -
+        {{ end }}
+      </td>
+      <td>
+        {{ $devLight := printf "static/img-dev/%s-light.png" $name }}
+        {{ if fileExists $devLight }}
+          <a href="img-dev/{{ $name }}-light.png">
+            <img src="img-dev/{{ $name }}-light.png" alt="{{ $name }} light dev" width="200px" />
+          </a>
+        {{ else }}
+          -
+        {{ end }}
+      </td>
+    </tr>
+    {{ end }}
+  </tbody>
+</table>
